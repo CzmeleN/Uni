@@ -1,65 +1,25 @@
 import random
 
-"""program korzysta z funkcji opt_dist z zad4 do
-analizowania korzysci z ruchu wzgledem wiersza i kolumny
+"""part_dist dziala analogicznie do opt_dist z zad4 do
+analizowania korzysci pojedynczego bloku z opisu i ustawienia
+go zachlannie w rzedzie ktoremu najblizej do opisu
 oraz z algorytmu opisanego w tresci zadania
-z limitem 40 ruchow na jedno ustawienie poczatkowe"""
+z limitem ruchow na jedno ustawienie poczatkowe"""
 
-# zamiana na listę bloków, na początku startujemy z blokami od lewej z przerwami jeden i dosuwamy je do końca od prawego
-# na podobnej zasadzie, odejmujemy/dodajemy wchodzace w pojedynczy blok, aby bylo szybciej mozemy policzyc o ile mozemy
-# do konca do prawej dosunac i zrobic petle na range tej wartosci zamiast sprawdzac czy zachaczamy o nastepny blok
-# wowczas powinna dzialac w miare spoko na tych testach, i musimy tez zwiekszyc liczbe dopuszczalnych ruchow
-# (wykonac testy ile 5% max w znalezionych przypadkach wychodzi)
-def opt_dist(row, desc):
-    # Inicjalizujemy licznik okienek do zmiany
-    okienka_do_zmiany = 0
-    
-    # Tworzymy listę grup komórek w wierszu
-    grupy_wiersza = []
-    current_group = 0
-    for cell in row:
-        if cell == 1:
-            current_group += 1
-        else:
-            if current_group > 0:
-                grupy_wiersza.append(current_group)
-                current_group = 0
-    if current_group > 0:
-        grupy_wiersza.append(current_group)
-
-    # Sprawdzamy, czy ilość grup wiersza jest zgodna z opisem
-        # Sprawdzamy, czy długości poszczególnych grup są zgodne z opisem
-    diff = len(desc) - len(grupy_wiersza)
-    if diff > 0:
-        for i in range(len(grupy_wiersza)):
-            if grupy_wiersza[i] != desc[i]:
-                okienka_do_zmiany += abs(desc[i] - grupy_wiersza[i])
-        okienka_do_zmiany += sum(desc[:diff])
-    elif diff < 0:
-        for i in range(len(desc)):
-            if grupy_wiersza[i] != desc[i]:
-                okienka_do_zmiany += abs(desc[i] - grupy_wiersza[i])
-        okienka_do_zmiany += sum(grupy_wiersza[:abs(diff)])
-    else:
-        for i in range(len(grupy_wiersza)):
-            if grupy_wiersza[i] != desc[i]:
-                okienka_do_zmiany += abs(desc[i] - grupy_wiersza[i])
-
-    return okienka_do_zmiany
-
-def old_dist(nrs, d):
+def part_dist(nrs, d, start, end):
+    res_start = start
     curr = 0
-
-    for i in range(d):
+    
+    for i in range(start, start + d):
         if(nrs[i] == 0):
             curr += 1
 
-    for i in range(d, len(nrs)):
+    for i in range(start + d, end):
         curr += nrs[i]
 
     max = curr
 
-    for i in range(len(nrs) - d):
+    for i in range(start, end - d):
         if nrs[i] == 0:
             curr -= 1
         else:
@@ -71,9 +31,32 @@ def old_dist(nrs, d):
             curr -= 1
 
         if curr < max:
+            res_start = i + 1
             max = curr
+            if curr == 0:
+                break
+
+    return res_start
+
+def opt_dist(row, desc):
+    start = 0
+    end = len(row)
+    left = sum(desc) + len(desc)
+    res = 0
+    blocks = [0 for i in range(end)]
+
+    for d in desc:
+        left -= d + 1
+        start = part_dist(row, d, start, end - left)
+        for i in range(start, start + d):
+            blocks[i] = 1
+        start += d + 1
     
-    return max
+    for i in range(end):
+        if row[i] != blocks[i]:
+            res += 1
+
+    return res
 
 def get_col(img, col):
     return [row[col] for row in img]
@@ -96,38 +79,34 @@ def col_opt_dist(img, col_desc, col):
     return opt_dist(get_col(img, col), col_desc[col])
 
 def almost_walk_sat(sizes, row_desc, col_desc):
-    limit = 1500
-
+    limit = 300
     while(True):
         bad_col = []
         bad_row = []
         img = []
-        for i in range(sizes[1]):
-            img.append([])
-            for j in range(sizes[0]):
-                img[i].append(random.randint(0, 1))
         for i in range(sizes[0]):
+            img.append([])
+            for j in range(sizes[1]):
+                img[i].append(random.randint(0, 1))
+        for i in range(sizes[1]):
             if opt_dist(get_col(img, i), col_desc[i]) > 0:
                 bad_col.append(i)
-        for i in range(sizes[1]):
+        for i in range(sizes[0]):
             if opt_dist(img[i], row_desc[i]) > 0:
                 bad_row.append(i)
 
         for it in range(limit):
             high_diff, high_id = float("-inf"), 0
             check_row, check_col = 0, 0
-            bad_start = 0 if bad_col else 1
-            bad_end = 1 if bad_row else 0
-            choice = random.randint(bad_start, bad_end)
+            choice = random.randint(0 if bad_col else 1, 1 if bad_row else 0)
+            
             if choice == 0:
                 col = random.choice(bad_col)
-                # print(f"selected col: {col + 1}")
                 col_diff = col_opt_dist(img, col_desc, col)
-                for row in range(sizes[1]):
+                for row in range(sizes[0]):
                     row_diff = opt_dist(img[row], row_desc[row])
                     diff = col_diff + row_diff
                     prev_diff = diff
-                    # print(diff, end="  ")
                     flip(img, row, col)
                     diff -= col_opt_dist(img, col_desc, col) + opt_dist(img[row], row_desc[row])
                     flip(img, row, col)
@@ -136,18 +115,15 @@ def almost_walk_sat(sizes, row_desc, col_desc):
                         high_id = row 
                         if diff == 2:
                             break
-                    # print(diff)
                 flip(img, high_id, col)
                 check_row = high_id
                 check_col = col
             else:
                 row = random.choice(bad_row)
-                # print(f"selected col: {col + 1}")
                 row_diff = opt_dist(img[row], row_desc[row])
-                for col in range(sizes[0]):
+                for col in range(sizes[1]):
                     col_diff = col_opt_dist(img, col_desc, col)
                     diff = col_diff + row_diff
-                    # print(diff, end="  ")
                     flip(img, row, col)
                     diff -= col_opt_dist(img, col_desc, col) + opt_dist(img[row], row_desc[row])
                     flip(img, row, col)
@@ -156,7 +132,6 @@ def almost_walk_sat(sizes, row_desc, col_desc):
                         high_id = col
                         if diff == 2:
                             break
-                    # print(diff)
                 flip(img, row, high_id)
                 check_row = row
                 check_col = high_id
@@ -166,21 +141,21 @@ def almost_walk_sat(sizes, row_desc, col_desc):
                 if res == 0:
                     bad_row.remove(check_row)
             elif res != 0:
-                bad_row.append(res)
+                bad_row.append(check_row)
 
             res = col_opt_dist(img, col_desc, check_col)
             if check_col in bad_col: 
                 if res == 0:
                     bad_col.remove(check_col)
             elif res != 0:
-                bad_col.append(res)
+                bad_col.append(check_col)
 
             if len(bad_row) == 0 and len(bad_col) == 0:
+                # print (it)
                 return img
-        print_img(img, row_desc, col_desc)
 
 if __name__ == "__main__":
-    with open("zad1_input.txt") as f:
+    with open("zad_input.txt") as f:
         row_desc = []
         col_desc = []
         sizes = f.readline()
@@ -188,7 +163,7 @@ if __name__ == "__main__":
         row_desc = [[int(size) for size in f.readline().split()] for i in range(sizes[0])]
         col_desc = [[int(size) for size in f.readline().split()] for i in range(sizes[1])]
         painted = almost_walk_sat(sizes, row_desc, col_desc)
-        with open("zad1_output.txt", 'w') as o:
+        with open("zad_output.txt", 'w') as o:
             for row in painted:
                 row_str = ""
                 for val in row:
