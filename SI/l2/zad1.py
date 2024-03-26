@@ -79,7 +79,7 @@ def col_opt_dist(img, col_desc, col):
     return opt_dist(get_col(img, col), col_desc[col])
 
 def almost_walk_sat(sizes, row_desc, col_desc):
-    limit = 300
+    limit = 1500
     while(True):
         bad_col = []
         bad_row = []
@@ -96,7 +96,9 @@ def almost_walk_sat(sizes, row_desc, col_desc):
                 bad_row.append(i)
 
         for it in range(limit):
-            high_diff, high_id = float("-inf"), 0
+            high_diff = float("-inf")
+            high_id = []
+            filtered_id = []
             check_row, check_col = 0, 0
             choice = random.randint(0 if bad_col else 1, 1 if bad_row else 0)
             
@@ -106,18 +108,18 @@ def almost_walk_sat(sizes, row_desc, col_desc):
                 for row in range(sizes[0]):
                     row_diff = opt_dist(img[row], row_desc[row])
                     diff = col_diff + row_diff
-                    prev_diff = diff
                     flip(img, row, col)
                     diff -= col_opt_dist(img, col_desc, col) + opt_dist(img[row], row_desc[row])
                     flip(img, row, col)
                     if diff > high_diff:
                         high_diff = diff
-                        high_id = row 
-                        if diff == 2:
-                            break
-                flip(img, high_id, col)
-                check_row = high_id
+                        high_id.append((row, diff))
+                for id in high_id:
+                    if id[1] == high_diff:
+                        filtered_id.append(id[0])
+                check_row = random.choice(filtered_id)
                 check_col = col
+                flip(img, check_row, col)
             else:
                 row = random.choice(bad_row)
                 row_diff = opt_dist(img[row], row_desc[row])
@@ -127,14 +129,15 @@ def almost_walk_sat(sizes, row_desc, col_desc):
                     flip(img, row, col)
                     diff -= col_opt_dist(img, col_desc, col) + opt_dist(img[row], row_desc[row])
                     flip(img, row, col)
-                    if diff > high_diff:
+                    if diff >= high_diff:
                         high_diff = diff
-                        high_id = col
-                        if diff == 2:
-                            break
-                flip(img, row, high_id)
+                        high_id.append((col, diff))
+                for id in high_id:
+                    if id[1] == high_diff:
+                        filtered_id.append(id[0])
                 check_row = row
-                check_col = high_id
+                check_col = random.choice(filtered_id)
+                flip(img, row, check_col)
 
             res = opt_dist(img[check_row], row_desc[check_row])
             if check_row in bad_row: 
@@ -151,8 +154,8 @@ def almost_walk_sat(sizes, row_desc, col_desc):
                 bad_col.append(check_col)
 
             if len(bad_row) == 0 and len(bad_col) == 0:
-                # print (it)
                 return img
+            print_img(img, row_desc, col_desc)
 
 if __name__ == "__main__":
     with open("zad_input.txt") as f:
