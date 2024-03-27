@@ -83,7 +83,7 @@ def generate_path(labirynth, sizes):
     queue = PriorityQueue()
     queue.put((0, (starting, 0, "")))
     visited = set(frozenset(starting))
-    max_heur = len(starting) / 50
+    min_heur = len(starting) / 50
 
     while queue:
         curr = queue.get()
@@ -97,7 +97,7 @@ def generate_path(labirynth, sizes):
             if frozen_pos not in visited:
                 visited.add(frozen_pos)
                 # 0.15*(len(curr[1][0]) - len(pos))
-                queue.put((new_steps + lookup_heur(labirynth, pos, lookup) + (max(max_heur, center_heur(pos)) if empty == 0 else 0), (pos, new_steps, curr[1][2] + move)))
+                queue.put((new_steps + lookup_heur(labirynth, pos, lookup) + (max(min_heur, center_heur(pos)) if empty == 0 else 0), (pos, new_steps, curr[1][2] + move)))
 
     return "Not found"   
 

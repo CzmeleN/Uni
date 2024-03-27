@@ -79,7 +79,7 @@ def col_opt_dist(img, col_desc, col):
     return opt_dist(get_col(img, col), col_desc[col])
 
 def almost_walk_sat(sizes, row_desc, col_desc):
-    limit = 1500
+    limit = 750
     while(True):
         bad_col = []
         bad_row = []
@@ -111,7 +111,7 @@ def almost_walk_sat(sizes, row_desc, col_desc):
                     flip(img, row, col)
                     diff -= col_opt_dist(img, col_desc, col) + opt_dist(img[row], row_desc[row])
                     flip(img, row, col)
-                    if diff > high_diff:
+                    if diff >= high_diff:
                         high_diff = diff
                         high_id.append((row, diff))
                 for id in high_id:

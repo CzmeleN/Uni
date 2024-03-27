@@ -1,28 +1,28 @@
 from collections import deque
 import random
 
-def make_moves(labirynth, poses, move, lowering):
+def make_moves(labirynth, poses, move):
     new_poses = []
     dx = 0
     dy = 0
-    for i in range(len(poses)):
-        if move == 'U':
+
+    if move == 'U':
             dx = -1
-        elif move == 'D':
-            dx = 1
-        elif move == 'L':
-            dy = -1
-        else:
-            dy = 1
+    elif move == 'D':
+        dx = 1
+    elif move == 'L':
+        dy = -1
+    else:
+        dy = 1
+
+    for i in range(len(poses)):
         old_pos = poses[i]
         new_pos = (old_pos[0] + dx, old_pos[1] + dy)
         if labirynth[new_pos[0]][new_pos[1]] == '#':
             new_pos = old_pos
-        if lowering:
-            if new_pos not in new_poses:
-                new_poses.append(new_pos)
-        else:
+        if new_pos not in new_poses:
             new_poses.append(new_pos)
+
     return new_poses
     
 
