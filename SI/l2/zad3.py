@@ -5,21 +5,24 @@ def make_moves(labirynth, poses, move):
     new_poses = []
     dx = 0
     dy = 0
-    for i in range(len(poses)):
-        if move == 'U':
+
+    if move == 'U':
             dx = -1
-        elif move == 'D':
-            dx = 1
-        elif move == 'L':
-            dy = -1
-        else:
-            dy = 1
+    elif move == 'D':
+        dx = 1
+    elif move == 'L':
+        dy = -1
+    else:
+        dy = 1
+
+    for i in range(len(poses)):
         old_pos = poses[i]
         new_pos = (old_pos[0] + dx, old_pos[1] + dy)
         if labirynth[new_pos[0]][new_pos[1]] == '#':
             new_pos = old_pos
         if new_pos not in new_poses:
             new_poses.append(new_pos)
+
     return new_poses
 
 def bfs_heur(labirynth, pos):
@@ -31,13 +34,14 @@ def bfs_heur(labirynth, pos):
         (x, y), dist = queue.popleft()
         curr = labirynth[x][y]
         if curr == 'G' or curr == 'B':
+            # print(dist)
             return dist
         for dx, dy in directions:
             new_x, new_y = x + dx, y + dy
             if labirynth[new_x][new_y] != '#' and (new_x, new_y) not in visited:
                 queue.append(((new_x, new_y), dist + 1))
                 visited.add((new_x, new_y))
-    return dist
+    return float("inf")
 
 
 def lookup_heur(labirynth, pos, lookup):
@@ -65,15 +69,21 @@ def generate_path(labirynth, sizes):
                 starting.append((i, j))
     moves = ['U', 'D', 'R', 'L']
     queue = PriorityQueue()
-    queue.put((0, (starting, "")))
+    queue.put((0, (starting, 0, "")))
+    visited = set(frozenset(starting))
 
     while queue:
         curr = queue.get()
-        if all(labirynth[x][y] == 'G' for (x, y) in curr[1][0]):
-            return curr[1]
+        # print(curr)
+        new_steps = curr[1][1] + 1
+        if all(labirynth[x][y] == 'G' or labirynth[x][y] == 'B' for (x, y) in curr[1][0]):
+            return curr[1][2]
         for move in moves:
             pos = make_moves(labirynth, curr[1][0], move)
-            queue.put((curr[0] + lookup_heur(labirynth, pos, lookup), (pos, curr[1][1] + move)))
+            frozen_pos = frozenset(pos)
+            if frozen_pos not in visited:
+                visited.add(frozen_pos)
+                queue.put((new_steps + lookup_heur(labirynth, pos, lookup), (pos, new_steps, curr[1][2] + move)))
 
     return "Not found"   
 
@@ -81,6 +91,6 @@ if __name__ == "__main__":
     with open("zad_input.txt") as f:
         labirynth = f.readlines()
         path = generate_path(labirynth, (len(labirynth), len(labirynth[0]) - 1))
-        print(path)
+        # print(path)
         with open("zad_output.txt", 'w') as o:
-            o.write(path[1])
+            o.write(path)
