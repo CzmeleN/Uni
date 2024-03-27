@@ -155,7 +155,7 @@ def almost_walk_sat(sizes, row_desc, col_desc):
 
             if len(bad_row) == 0 and len(bad_col) == 0:
                 return img
-            print_img(img, row_desc, col_desc)
+            # print_img(img, row_desc, col_desc)
 
 if __name__ == "__main__":
     with open("zad_input.txt") as f:
