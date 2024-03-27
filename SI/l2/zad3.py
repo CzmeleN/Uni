@@ -41,11 +41,18 @@ def bfs_heur(labirynth, pos):
             if labirynth[new_x][new_y] != '#' and (new_x, new_y) not in visited:
                 queue.append(((new_x, new_y), dist + 1))
                 visited.add((new_x, new_y))
+
     return float("inf")
 
+def center_heur(pos):
+    count = len(pos)
+    avg_x = sum([x for (x, _) in pos]) / count
+    avg_y = sum([y for (_, y) in pos]) / count
+    return sum([abs(avg_x - x) + abs(avg_y - y) for (x, y) in pos]) / (2 * count)
 
 def lookup_heur(labirynth, pos, lookup):
     max = 0
+
     for (x, y) in pos:
         if lookup[x][y] != -1:
             dist = lookup[x][y]
@@ -60,6 +67,8 @@ def lookup_heur(labirynth, pos, lookup):
 def generate_path(labirynth, sizes):
     lookup = []
     starting = []
+    empty = 0
+
     for i in range(sizes[0]):
         lookup.append([])
         for j in range(sizes[1]):
@@ -67,10 +76,14 @@ def generate_path(labirynth, sizes):
             curr = labirynth[i][j]
             if curr == 'S' or curr == 'B':
                 starting.append((i, j))
+            elif curr == ' ':
+                empty += 1
+
     moves = ['U', 'D', 'R', 'L']
     queue = PriorityQueue()
     queue.put((0, (starting, 0, "")))
     visited = set(frozenset(starting))
+    max_heur = len(starting) / 50
 
     while queue:
         curr = queue.get()
@@ -83,7 +96,8 @@ def generate_path(labirynth, sizes):
             frozen_pos = frozenset(pos)
             if frozen_pos not in visited:
                 visited.add(frozen_pos)
-                queue.put((new_steps + lookup_heur(labirynth, pos, lookup), (pos, new_steps, curr[1][2] + move)))
+                # 0.15*(len(curr[1][0]) - len(pos))
+                queue.put((new_steps + lookup_heur(labirynth, pos, lookup) + (max(max_heur, center_heur(pos)) if empty == 0 else 0), (pos, new_steps, curr[1][2] + move)))
 
     return "Not found"   
 
