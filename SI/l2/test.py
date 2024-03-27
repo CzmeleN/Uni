@@ -50,4 +50,4 @@ def opt_dist(row, desc):
 
     return res
 
-print(opt_dist([1, 1, 1, 0, 0, 0, 0, 0], [1, 1]))
+print(opt_dist([1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1]))
