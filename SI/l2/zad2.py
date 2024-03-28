@@ -27,39 +27,30 @@ def lower_uncertanity(labirynth, sizes):
             for j in range(sizes[1]):
                 if labirynth[i][j] == 'S' or labirynth[i][j] == 'B':
                     starting.append((i, j))
-    path = ""
-    # active = True
-    # pos = []
-    # while(active):
-    # # path = "LLLLLLLDR"
-    #     pos = starting
-    #     path = ""
-    #     for i in range(20):
-    #         # (dx, dy) = get_dir(m)
-    #         (dx, dy) = random.choice(directions)
-    #         path += get_move(dx, dy)
-    #         new_pos = []
-    #         # zamienic z formuly bfs-like na formule pod random
-    #         for (x, y) in pos:
-    #             new_x, new_y = x + dx, y + dy
-    #             if labirynth[new_x][new_y] != '#':    
-    #                 if (new_x, new_y) not in new_pos:
-    #                     new_pos.append((new_x, new_y))
-    #             elif (x, y) not in new_pos:
-    #                 new_pos.append((x, y))
-    #         pos = new_pos
-    #         if len(pos) <= 10:
-    #             active = False
-    #             break
-    # starting = pos
+    pos = starting
+    path = ''
+    # path = "U" * sizes[0] + "L" * sizes[1] + "D" * sizes[0]
+    # for move in path:
+    #     (dx, dy) = get_dir(move)
+    #     new_pos = []
+    #     # zamienic z formuly bfs-like na formule pod random
+    #     for (x, y) in pos:
+    #         new_x, new_y = x + dx, y + dy
+    #         if labirynth[new_x][new_y] != '#':    
+    #             if (new_x, new_y) not in new_pos:
+    #                 new_pos.append((new_x, new_y))
+    #         elif (x, y) not in new_pos:
+    #             new_pos.append((x, y))
+    #     pos = new_pos
+    starting = pos
     tuple_start = tuple(starting)
     queue = deque([(tuple_start, path)])
     visited = {tuple_start}
-
+    lowest = float("inf")
     while(queue):
         pos, path = queue.popleft()
-        lowest = len(pos)
-        
+        if len(pos) > lowest:
+            continue
         if lowest == 1:
             break
 
@@ -78,7 +69,6 @@ def lower_uncertanity(labirynth, sizes):
             new_len = len(new_pos)
             if new_len < lowest:
                 lowest = new_len
-                queue.clear()
             queue.append((tuple_pos, path + get_move(dx, dy)))
             visited.add(tuple_pos)
 
