@@ -3,7 +3,16 @@ let ( let* ) xs ys = List.concat_map ys xs
 let rec choose m n =
   if m > n then [] else m :: choose (m+1) n
 
-let build_row ps n = _
+let build_row ps n = 
+  let rec get_sum sum ps =
+    match ps with
+    | [] -> sum
+    | p :: ps' -> get_sum (sum + p) ps'
+  in let rec aux res ps =
+    match ps with
+    | [] -> res
+    | p :: ps' -> res
+    | _ -> res
 
 let build_candidate pss n = _
 
