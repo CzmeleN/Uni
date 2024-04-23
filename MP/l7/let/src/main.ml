@@ -76,8 +76,8 @@ let rec eval (e : expr) : value =
     let rec aux i acc = 
       if i > end_val then acc
       else 
-        let new_env = subst x (Int i) e3 in
-        let res = match eval new_env with
+        let new_subst = subst x (Int i) e3 in
+        let res = match eval new_subst with
         | VInt n -> n
         | _ -> failwith "type error" in
       aux (i + 1) (acc + res) in
