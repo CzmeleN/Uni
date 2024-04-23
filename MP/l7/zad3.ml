@@ -26,3 +26,6 @@ let rec closed_with_env (env : ident list) (e : expr) : bool =
 
 let closed (e : expr) : bool = 
   closed_with_env [] e
+
+let test1 = Let ("y", Int 3, Let ("x", Int 1, Binop (Add, Var "x", Var "y")))
+let test2 = Let ("x", Binop (Add, Var "x", Int 1), Var "x")

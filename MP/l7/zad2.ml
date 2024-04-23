@@ -1,19 +1,21 @@
-(* for loop z pascala *)
+(* abstract syntax tree *)
 
-type expr = 
+type bop = Mult | Div | Add | Sub | Eq | Lt | Gt | Leq | Geq | Neq | And | Or
+
+type ident = string
+                                                                         
+type expr =
   | Int of int
-  | Var of string
-  | Seq of expr list
-  | ForLoop of string * expr * expr * expr
+  | Bool of bool
+  | Var of ident
+  | Binop of bop * expr * expr
+  | If of expr * expr * expr
+  | Let of ident * expr * expr
 
-(* w for i := n to m do ... end (* pętla w Pascalu *) i - string, n - var, m - var, reszta - seq list *)
+type range = int * int
 
-(* całka *)
+type forLoop = 
+| Loop of ident * range * forLoop list
+| Instruction of expr
 
-type expr = 
-  | Int of int
-  | Var of string
-  | Fun of string * expr
-  | Integral of expr * expr * expr * string (* dać np dx *)
-
-(* w n, k integral f(x) dx // n - var, k - var, f(x) - fun, dx - string *)
+type integral = ident * range * expr list * string
