@@ -44,17 +44,18 @@ def create_possibs(values, others_count):
     return possibs
 
 def resolution(sizes, row_desc, col_desc):
+    # sizes - wiersze x kolumny
     img = [[0 for _ in range(sizes[1])] for r in range(sizes[0])]
-    rows_possibs = create_possibs(row_desc, sizes[0])
-    cols_possibs = create_possibs(col_desc, sizes[1])
-    rows_done = [0] * sizes[1]
-    cols_done = [0] * sizes[0]
+    rows_possibs = create_possibs(row_desc, sizes[1])
+    cols_possibs = create_possibs(col_desc, sizes[0])
+    rows_done = [0] * sizes[0]
+    cols_done = [0] * sizes[1]
+    print_img(img, row_desc, col_desc)
+    print(sizes)
 
-    ds = 0
     while True:
-        ds += 1
-        lowest_rows = [(i, n, id) for i, n in enumerate([len(i) for i in rows_possibs]) if rows_done[i] == 0]
-        lowest_cols = [(i, n, id) for i, n in enumerate([len(i) for i in cols_possibs]) if cols_done[i] == 0]
+        lowest_rows = [(i, n, 1) for i, n in enumerate([len(i) for i in rows_possibs]) if rows_done[i] == 0]
+        lowest_cols = [(i, n, 0) for i, n in enumerate([len(i) for i in cols_possibs]) if cols_done[i] == 0]
         lowest = sorted(lowest_rows + lowest_cols, key = lambda element: element[1])
 
         for id1, _, row_id in lowest:
@@ -84,8 +85,7 @@ def resolution(sizes, row_desc, col_desc):
         if 0 not in rows_done and 0 not in cols_done:
             return img
         print_img(img, row_desc, col_desc)
-        if ds == 5:
-            break
+        print(rows_done)
 
 def backtrack(sizes, row_desc, col_desc):
     return
