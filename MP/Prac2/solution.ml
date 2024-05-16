@@ -127,16 +127,3 @@ let cse (expr : expr) : expr option =
     | x :: _ ->
       Some (Let ("tmp", x, replace (Var "tmp") x expr)) in
   aux expr to_replace
-
-(* let cse (e : expr) : expr option =
-  let to_replace = subs_to_replace e in
-  if to_replace = [] then None else
-  let rec cse' e to_replace =
-    match to_replace with
-    | [] -> Some e
-    | x :: tl -> 
-      let new_id = "#" ^ string_of_int(List.length to_replace) in
-      let replace_x = Let(new_id, x, replace (Var new_id) x e) in
-      cse' replace_x tl 
-    in cse' e to_replace 
-   *)
