@@ -4,6 +4,7 @@
 #include <random>
 #include <mutex>
 #include <thread>
+#include <algorithm>
 
 enum class Sign { black, white, empty };
 static const short MAX_THREADS = 16;
@@ -61,6 +62,7 @@ struct Node {
     Board board;
     Sign to_move;
     std::vector <Node*> children;
+    std::vector <std::pair<short, short>> black_poses, white_poses;
 
     Node(Board b, Sign player) : board(b), to_move(player) {}
 
@@ -118,6 +120,10 @@ std::vector<std::pair<short, short>> valid_move(const Board& board, short i, sho
         // i da sie z niego dojsc do naszego, to dodajemy go
         for (short dx : {-1, 0, 1}) {
             for (short dy : {-1, 0, 1}) {
+                if (!dx && !dy) {
+                    continue;
+                }
+
                 short new_x = i + dx;
                 short new_y = j + dy;
 
@@ -187,6 +193,37 @@ void make_move(Board& board, Move move, Sign player) {
 }
 
 int eval(const Board& board, Sign player) {
+    static const int position_weights[SIZE][SIZE] = {
+        { 4, 0, 2, 2, 2, 2, 0, 4 },
+        { 0, 0, 2, 1, 1, 2, 0, 0 },
+        { 2, 2, 2, 1, 1, 2, 2, 2 },
+        { 2, 2, 1, 1, 1, 1, 2, 2 },
+        { 2, 2, 1, 1, 1, 1, 2, 2 },
+        { 2, 2, 2, 1, 1, 2, 2, 2 },
+        { 0, 0, 2, 1, 1, 2, 0, 0 },
+        { 4, 0, 2, 2, 2, 2, 0, 4 }
+    };
+
+    int score = 0;
+    Sign opponent = not_player(player);
+
+    for (short i = 0; i < SIZE; i++) {
+        for (short j = 0; j < SIZE; j++) {
+            Sign cell = board.board[i][j];
+
+            if (cell == player) {
+                score += position_weights[i][j];
+            } 
+            else if (cell == opponent) {
+                score -= position_weights[i][j];
+            }
+        }
+    }
+
+    return score;
+}
+
+int fin_eval(const Board& board, Sign player) {
     int score = 0;
 
     for (short i = 0; i < SIZE; i++) {
@@ -250,8 +287,8 @@ Node* random_move(Node* root) {
     return root->children[rand() % root->children.size()];
 }
 
-void evaluate_node(Node* child, int& best_value, Node*& best_node, std::mutex& mtx) {
-    int node_val = minimax(child, DEPTH, false, std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+void evaluate_node(Node* child, int& best_value, Node*& best_node, std::mutex& mtx, short depth) {
+    int node_val = minimax(child, depth, false, std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
     std::lock_guard<std::mutex> lock(mtx);
     if (node_val > best_value) {
         best_value = node_val;
@@ -259,14 +296,23 @@ void evaluate_node(Node* child, int& best_value, Node*& best_node, std::mutex& m
     }
 }
 
-Node* best_move(Node* root) {
+Node* best_move(Node* root, short move_ct) {
     int best_value = std::numeric_limits<int>::min(), node_val;
+    short depth = 3;
     Node* best_node = nullptr;
     std::mutex mtx;
     std::vector<std::thread> threads;
 
+    short count = root->children.size();
+    if (move_ct > 25) {
+        depth++;
+    }
+    if (move_ct > 37) {
+        depth++;
+    }
+
     for (Node* child : root->children) {
-        threads.emplace_back(evaluate_node, child, std::ref(best_value), std::ref(best_node), std::ref(mtx));
+        threads.emplace_back(evaluate_node, child, std::ref(best_value), std::ref(best_node), std::ref(mtx), depth);
         if (threads.size() == MAX_THREADS) {
             for (auto& thread : threads) {
                 thread.join();
@@ -290,19 +336,23 @@ int main(int argc, char *argv[])
     Node* best_node = nullptr;
     bool possible = false, skipped = false;
     std::pair<short, short> wins = {0, 0};
+    Sign mm_sign;
+    short move_ct;
 
     srand(time(NULL));
     
     for (int i = 0; i < GAMES; i++) {
         root = new Node(board, Sign::black);
         starting = root;
+        mm_sign = rand() % 2 ? Sign::white : Sign::black;
+        move_ct = 0;
 
         while (true) {
             possible = root->gen_children();
 
             if (!possible) {
                 if (skipped) {
-                    if (eval(root->board, Sign::black)) {
+                    if (fin_eval(root->board, mm_sign)) {
                         wins.first++;
                     }
                     else {
@@ -317,21 +367,15 @@ int main(int argc, char *argv[])
                 skipped = false;
             }
 
-            if (root->to_move == Sign::black) {
-                best_node = best_move(root);
+            if (root->to_move == mm_sign) {
+                best_node = best_move(root, move_ct);
             }
             else {
                 best_node = random_move(root);
             }
             
-            if (best_node) {
-                root = best_node;
-                // root->board.print();
-            }
-            else {
-                std::cout << "No valid moves left" << std::endl;
-                break;
-            }
+            root = best_node;
+            move_ct++;
         }
 
         std::cout << "Minimax #wins: " << wins.first << " Random #wins: " << wins.second << std::endl;
