@@ -2,10 +2,13 @@
 #include <vector>
 #include <limits>
 #include <random>
+#include <mutex>
+#include <thread>
 
 enum class Sign { black, white, empty };
+static const short MAX_THREADS = 16;
 static const short SIZE = 8;
-static const short DEPTH = 3;
+static const short DEPTH = 5;
 static const short GAMES = 1000;
 
 struct Move {
@@ -36,10 +39,10 @@ class Board {
                     std::cout << " . ";
                 }
                 else if (board[i][j] == Sign::black) {
-                    std::cout << " B ";
+                    std::cout << " o ";
                 }
                 else if (board[i][j] == Sign::white) {
-                    std::cout << " W ";
+                    std::cout << " # ";
                 }
             }
             std::cout << std::endl;
@@ -215,16 +218,12 @@ int minimax(Node* node, short depth, bool maximizing, int alpha, int beta) {
         int max_eval = std::numeric_limits<int>::min();
 
         for (Node* child : node->children) {
-            // if (!child) {
-            //     continue;
-            // }
-
             int eval = minimax(child, depth - 1, false, alpha, beta);
             max_eval = std::max(max_eval, eval);
             alpha = std::max(alpha, eval);
 
             if (beta <= alpha) {
-                break;
+               break;
             }
         }
 
@@ -234,8 +233,6 @@ int minimax(Node* node, short depth, bool maximizing, int alpha, int beta) {
         int min_eval = std::numeric_limits<int>::max();
 
         for (Node* child : node->children) {
-            //if (!child) continue;
-
             int eval = minimax(child, depth - 1, true, alpha, beta);
             min_eval = std::min(min_eval, eval);
             beta = std::min(beta, eval);
@@ -253,17 +250,33 @@ Node* random_move(Node* root) {
     return root->children[rand() % root->children.size()];
 }
 
+void evaluate_node(Node* child, int& best_value, Node*& best_node, std::mutex& mtx) {
+    int node_val = minimax(child, DEPTH, false, std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+    std::lock_guard<std::mutex> lock(mtx);
+    if (node_val > best_value) {
+        best_value = node_val;
+        best_node = child;
+    }
+}
+
 Node* best_move(Node* root) {
     int best_value = std::numeric_limits<int>::min(), node_val;
     Node* best_node = nullptr;
+    std::mutex mtx;
+    std::vector<std::thread> threads;
 
     for (Node* child : root->children) {
-        node_val = minimax(child, DEPTH, false, std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
-
-        if (node_val > best_value) {
-            best_value = node_val;
-            best_node = child;
+        threads.emplace_back(evaluate_node, child, std::ref(best_value), std::ref(best_node), std::ref(mtx));
+        if (threads.size() == MAX_THREADS) {
+            for (auto& thread : threads) {
+                thread.join();
+            }
+            threads.clear();
         }
+    }
+    
+    for (auto& thread : threads) {
+        thread.join();
     }
 
     return best_node;
