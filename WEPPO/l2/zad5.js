@@ -1,59 +1,60 @@
-const osoba = {
-    imie: "Jan",
+const person = {
+    name: "Jan",
 
-    przedstawSie: function() {
-        console.log(`Cześć, nazywam się ${this.imie}.`);
+    introduceYourself: function() {
+        console.log(`Cześć, nazywam się ${this.name}.`);
     },
 
-    _wiek: 20,
+    _age: 20,
 
-    get wiek() {
-        return this._wiek;
+    get age() {
+        return this._age;
     },
-    set wiek(nowyWiek) {
-        if (typeof nowyWiek === "number" && nowyWiek > 0) {
-            this._wiek = nowyWiek;
+    set age(newAge) {
+        if (typeof newAge === "number" && newAge > 0) {
+            this._age = newAge;
         } else {
             console.log("Podaj prawidłowy wiek.");
         }
     }
 }
 
-osoba.przedstawSie(); // Cześć, nazywam się Jan.
-console.log(osoba.wiek); // 20
-osoba.wiek = 21;
-console.log(osoba.wiek); // 21
-osoba.wiek = -5; // Podaj prawidłowy wiek.
+person.introduceYourself(); // Cześć, nazywam się Jan.
+console.log(person.age); // 20
+person.age = 21;
+console.log(person.age); // 21
+person.age = -5; // Podaj prawidłowy wiek.
 
-const samochod = {
-    marka: "Honda"
+const car = {
+    make: "Honda"
 }
 
-samochod.model = "Accord"
-console.log(samochod.model) // Accord
+car.model = "Accord"
+console.log(car.model) // Accord
 
-samochod.opisz = function() {
-    console.log(`To jest ${this.marka} ${this.model}.`);
+car.describe = function() {
+    console.log(`To jest ${this.make} ${this.model}.`);
 }
 
-samochod.opisz() // To jest Honda Accord.
+car.describe() // To jest Honda Accord.
 
-Object.defineProperty(samochod, "rokProdukcji", {
+Object.defineProperty(car, "yearOfProduction", {
     get: function() {
-        return this._rokProdukcji
+        return this._yearOfProduction
     },
-    set: function(nowyRok) {
-        if (typeof nowyRok === 'number' && nowyRok > 1885) { // Pierwszy samochód zbudowano w 1886
-            this._rokProdukcji = nowyRok
-        } else {
+    set: function(newYear) {
+        if (typeof newYear === 'number' && newYear > 1885) {
+            this._yearOfProduction = newYear
+        }
+        else {
             console.log('Podaj prawidłowy rok produkcji.')
         }
     },
 })
 
-samochod.rokProdukcji = 2020;
-console.log(samochod.rokProdukcji); // 2020
-samochod.rokProdukcji = 1800; // Podaj prawidłowy rok produkcji.
+car.yearOfProduction = 2020;
+console.log(car.yearOfProduction); // 2020
+car.yearOfProduction = 1800; // Podaj prawidłowy rok produkcji.
 
 // Dodawanie Pól i Metod
 //     Można dodawać za pomocą bezpośredniego przypisania:
