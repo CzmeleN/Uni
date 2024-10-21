@@ -1,11 +1,11 @@
-typeof "Hello, World!"; // "string"
-typeof 42;              // "number"
-typeof true;            // "boolean"
-typeof undefined;       // "undefined"
-typeof { name: "Alice" }; // "object"
-typeof null;            // "object" 
-typeof function() {};   // "function"
-typeof Symbol();        // "symbol"
+console.log(typeof "Hello, World!"); // "string"
+console.log(typeof 42);              // "number"
+console.log(typeof true);            // "boolean"
+console.log(typeof undefined);       // "undefined"
+console.log(typeof { name: "Alice" }); // "object"
+console.log(typeof null);            // "object" 
+console.log(typeof function() {});   // "function"
+console.log(typeof Symbol());        // "symbol"
 
 const date = new Date();
 console.log(date instanceof Date);       // true

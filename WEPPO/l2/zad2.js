@@ -19,16 +19,16 @@ console.log(obj["123"])
 console.log(obj[123])
 console.log(Object.keys(obj)) // Klucz jest zawsze konwertowany na string
 
-const obj = {}
+const obj1 = {}
 const keyObj = { id: 1 }
 const anotherKeyObj = { id: 2 }
 
 obj[keyObj] = "Object Key 1"
 obj[anotherKeyObj] = "Object Key 2"
 
-console.log(obj[keyObj]) // Object Key 2
-console.log(obj[anotherKeyObj]) // Object Key 2
-console.log(Object.keys(obj)) // ['[object Object]']
+console.log(obj1[keyObj]) // Object Key 2
+console.log(obj1[anotherKeyObj]) // Object Key 2
+console.log(Object.keys(obj1)) // ['[object Object]']
 
 // Liczby: Programista może myśleć, że klucz jest liczbą, ale JavaScript automatycznie konwertuje go na string.
 // Ważne jest, aby pamiętać, że obj[42] i obj['42'] odnoszą się do tego samego klucza.
@@ -50,51 +50,51 @@ console.log(arr[1]) // Eleven
 // a nie jako element tablicy. W powyższym przykładzie arr['first'] jest oddzielną właściwością, a nie elementem tablicy.
 // Ustawienie arr['1'] nadpisuje istniejący element na indeksie 1.
 
-const arr = [1, 2, 3];
+const arr1 = [1, 2, 3];
 
-const keyObj = { key: "value" };
-const anotherKeyObj = { key: "another" };
+const keyObj1 = { key: "value" };
+const anotherKeyObj1 = { key: "another" };
 
-arr[keyObj] = "Object Key";
-arr[anotherKeyObj] = "Another Object Key";
+arr1[keyObj1] = "Object Key";
+arr1[anotherKeyObj1] = "Another Object Key";
 
-console.log(arr[keyObj]);            // Another Object Key
-console.log(arr[anotherKeyObj]);     // Another Object Key
-console.log(arr["[object Object]"]); // Another Object Key
+console.log(arr1[keyObj]);            // Another Object Key
+console.log(arr1[anotherKeyObj]);     // Another Object Key
+console.log(arr1["[object Object]"]); // Another Object Key
 
-console.log(arr.length);             // 3
-console.log(arr);                    // [1, 2, 3, '[object Object]': 'Another Object Key']
+console.log(arr1.length);             // 3
+console.log(arr1);                    // [1, 2, 3, '[object Object]': 'Another Object Key']
 
 // Podobnie jak w przypadku obiektów jako kluczy dla zwykłych obiektów, tablice również konwertują obiekty na string ('[object Object]').
 // Oznacza to, że różne obiekty będą odnosić się do tego samego klucza '[object Object]', co może prowadzić do nadpisywania wartości.
 
-const arr = [100, 200, 300];
+const arr2 = [100, 200, 300];
 
-arr["name"] = "MyArray";
-arr["0x1"] = "Hex Key";
+arr2["name"] = "MyArray";
+arr2["0x1"] = "Hex Key";
 
-console.log(arr.name);   // MyArray
-console.log(arr["0x1"]); // Hex Key
-console.log(arr.length); // 3
-console.log(arr);        // [100, 200, 300, name: "MyArray", '0x1': "Hex Key"]
+console.log(arr2.name);   // MyArray
+console.log(arr2["0x1"]); // Hex Key
+console.log(arr2.length); // 3
+console.log(arr2);        // [100, 200, 300, name: "MyArray", '0x1': "Hex Key"]
 
 // Dodawanie właściwości z kluczami niebędącymi liczbami dodaje je jako zwykłe właściwości obiektu tablicy,
 // bez wpływu na length lub istniejące indeksy.
 
-const arr = [1, 2, 3, 4, 5];
-console.log(arr);          // [1, 2, 3, 4, 5]
-console.log(arr.length);   // 5
+const arr3 = [1, 2, 3, 4, 5];
+console.log(arr3);          // [1, 2, 3, 4, 5]
+console.log(arr3.length);   // 5
 
-arr.length = 3;
-console.log(arr);          // [1, 2, 3]
-console.log(arr.length);   // 3
+arr3.length = 3;
+console.log(arr3);          // [1, 2, 3]
+console.log(arr3.length);   // 3
 
-arr.length = 5;
-console.log(arr);          // [1, 2, 3, <2 empty items>]
-console.log(arr.length);   // 5
+arr3.length = 5;
+console.log(arr3);          // [1, 2, 3, <2 empty items>]
+console.log(arr3.length);   // 5
 
-console.log(arr[3]);       // undefined
-console.log(arr[4]);       // undefined
+console.log(arr3[3]);       // undefined
+console.log(arr3[4]);       // undefined
 
 // Ustawienie length na wartość mniejszą niż obecna liczba elementów:
 // Elementy o indeksach równych lub większych niż nowa długość zostaną usunięte.
