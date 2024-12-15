@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Generator paska zgłoszenia zadań</title>
+        <style>
+            body {
+                background-color: #eeeeee;
+                margin: 0;
+                padding: 0;
+            }
+            h1 {
+                text-align: center;
+            }
+            form {
+                width: 100%;
+            }
+            table {
+                border-collapse: collapse;
+                table-layout: fixed;
+                width: 100%;
+            }
+            td, th {
+                border: 1px solid #000;
+                padding: 5px;
+            }
+            button {
+                width: 100%;
+                padding: 10px;
+                background-color: #dddddd;
+                font-size: 18px;
+                cursor: pointer;
+            }
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #ffffff;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            }
+            .label {
+                display: inline-block;
+                width: 100%;
+            }
+            .form-group {
+                margin-bottom: 20px;
+            }
+            .form-group input {
+                width: 100%;
+                padding: 10px;
+                box-sizing: border-box;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Generator paska zgłoszenia zadań</h1>
+            <% if (error) { %>
+                <p style="color: red; text-align: center;" ><%= error %></p>
+            <% } %>
+            <form action="/" method="POST">
+                <div class="form-group">
+                    <input type="text" name="firstName" placeholder="Imię" />
+                </div>
+                <div class="form-group">
+                    <input type="text" name="lastName" placeholder="Nazwisko" />
+                </div>
+                <div class="form-group">
+                    <input type="text" name="courseName" placeholder="Nazwa zajęć" />
+                </div>
+
+                <table>
+                    <tr>
+                        <th>Nr zadania</th>
+                        <th>Zadeklarowane punkty</th>
+                    </tr>
+                    <% for (let i = 1; i <= 10; i++) { %>
+                        <tr>
+                            <td><%= i %>.</td>
+                            <td><input type="number" step="0.5" name="task<%= i %>" placeholder="brak" min="0" max="10" style="width: 100%; box-sizing: border-box;" /></td>
+                        </tr>
+                    <% } %>
+                </table>
+                <br />
+                <button type="submit">Generuj</button>
+            </form>
+        </div>
+    </body>
+</html>
+
