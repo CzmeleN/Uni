@@ -4,7 +4,7 @@ typedef unsigned long long int ull;
 
 using namespace std;
 
-constexpr ull MOD = 1000000000;
+constexpr ull MOD = 1'000'000'000;
 
 ull fast_pow(ull x, ull n) {
     ull res = 1;

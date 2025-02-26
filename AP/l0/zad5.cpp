@@ -3,58 +3,38 @@
 using namespace std;
 
 constexpr int N = 12;
-constexpr int DIRS = 8;
-constexpr int SIZE = N * N;
-constexpr int DX[DIRS] = {-1, -1, -1, 0, 0, 1, 1, 1};
-constexpr int DY[DIRS] = {-1, 0, 1, -1, 1, -1, 0, 1};
 
-int backtrack(uint16_t board[], int n, int x) {
-    uint16_t b;
+bool col[N] = {0};
+bool diag1[2 * N] = {0};
+bool diag2[2 * N] = {0};
+
+int backtrack(int n, int x) {
     int res = 0;
-    int nx, ny;
 
     for (int i = 0; i < n; ++i) {
-        b = 1 << i;
-
-        if ((board[x] & b) == 0) {
+        if (!col[i] && !diag1[x + i] && !diag2[x + n - i]) {
             if (x == n - 1) {
                 return 1;
             }
 
-            uint16_t new_board[SIZE];
+            col[i] = true;
+            diag1[x + i] = true;
+            diag2[x + n - i] = true;
 
-            copy(board, board + n, new_board);
+            res += backtrack(n, x + 1);
 
-            //new_board[x] = 0xFFFF;
-            new_board[x] |= b;
-
-            for (int j = 0; j < DIRS; ++j) {
-                nx = x + DX[j];
-                ny = i + DY[j];
-
-                while (nx >= 0 && ny >= 0 && nx < n && ny < n) {
-                    new_board[nx] |= 1 << ny;
-                    nx += DX[j];
-                    ny += DY[j];
-                }
-            }
-
-            res += backtrack(new_board, n, x + 1);
+            col[i] = false;
+            diag1[x + i] = false;
+            diag2[x + n - i] = false;
         }
     }
 
     return res;
 }
 
-int hetmans(int n) {
-    uint16_t board[N] = {0};
-
-    return backtrack(board, n, 0);
-}
-
 int main() {
     int n;
     
     cin >> n;
-    cout << hetmans(n) << endl;
+    cout << backtrack(n, 0) << endl;
 }

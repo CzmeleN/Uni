@@ -6,7 +6,9 @@ using namespace std;
 
 constexpr int N = 100000;
 
-ll bin_search(ll tab[], ll n, ll x) {
+ll tab[N];
+
+ll bin_search(ll n, ll x) {
     int start = 0;
     int end = n - 1;
     int id;
@@ -27,7 +29,6 @@ ll bin_search(ll tab[], ll n, ll x) {
 }
 
 int main() {
-    ll tab[N];
     int n, m, x;
 
     cin >> n;
@@ -41,6 +42,6 @@ int main() {
 
     while (m--) {
         cin >> x;
-        cout << bin_search(tab, n, x) << endl;
+        cout << bin_search(n, x) << endl;
     }
 }

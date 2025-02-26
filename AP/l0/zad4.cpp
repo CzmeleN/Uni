@@ -1,49 +1,67 @@
 #include <bits/stdc++.h>
+#include <cstdint>
 
 using namespace std;
 
-void shift_down(vector<int> &tab, int n, int i) {
-    int largest = i;
-    int lc = 2 * i + 1;
-    int rc = 2 * i + 2;
+typedef int_fast32_t fint;
 
-    if (lc < n && tab[lc] > tab[largest]) {
-        largest = lc;
+constexpr int N = 100000;
+
+fint tab[N], buff[N];
+
+void merge(int l, int r, int c) {
+    int fs = l, ss = c + 1, tab_id = l;
+
+    for (int i = l; i <= r; ++i) {
+        buff[i] = tab[i];
     }
 
-    if (rc < n && tab[rc] > tab[largest]) {
-        largest = rc;
+    while (fs != c + 1 && ss != r + 1) {
+        if (buff[fs] < buff[ss]) {
+            tab[tab_id] = buff[fs++];
+        } else {
+            tab[tab_id] = buff[ss++];
+        }
+
+        ++tab_id;
     }
 
-    if (largest != i) {
-        swap(tab[i], tab[largest]);
-        shift_down(tab, n, largest);
+    while (fs != c + 1) {
+        tab[tab_id++] = buff[fs++];
+    }
+
+    while (ss != r + 1) {
+        tab[tab_id++] = buff[ss++];
     }
 }
 
-void heap_sort(vector<int> &tab, int n) {
-    for (int i = n / 2 - 1; i >= 0; --i) {
-        shift_down(tab, n, i);
-    }
+void merge_sort(int l, int r) {
+    if (l == r) return;
 
-    for (int i = n - 1; i >= 0; --i) {
-        swap(tab[0], tab[i]);
-        shift_down(tab, i, 0);
+    if (l + 1 == r) {
+        if (tab[l] > tab[r]) {
+            swap(tab[l], tab[r]);
+        }
+    } else {
+        int c = (l + r) / 2;
+
+        merge_sort(l, c);
+        merge_sort(c + 1, r);
+        merge(l, r, c);
     }
 }
+
 
 int main() {
     int n;
     
     cin >> n;
 
-    vector<int> tab(n);
-
     for (int i = 0; i < n; ++i) {
         cin >> tab[i];
     }
 
-    heap_sort(tab, n);
+    merge_sort(0, n - 1);
 
     for (int i = 0; i < n; ++i) {
         cout << tab[i] << ' ';
