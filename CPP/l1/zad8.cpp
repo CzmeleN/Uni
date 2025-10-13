@@ -35,9 +35,9 @@ auto first_last(vector<int>& vec, const int k) {
 }
 
 int main() {
-    vector<int> vec = {1, 2, 3, 3, 4, 5, 5, 5, 6, 7, 7, 7, 7, 8, 9};
+    vector<int> vec = {1, 2, 3, 3, 3, 5, 5, 5, 6, 7, 7, 7, 7, 8, 9};
 
-    auto [first, last] = first_last(vec, 5);
+    auto [first, last] = first_last(vec, 4);
 
     cout << "ids: [" << distance(vec.begin(), first) << ", " << distance(vec.begin(), last) << ')' << endl;
 
