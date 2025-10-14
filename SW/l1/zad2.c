@@ -8,7 +8,7 @@
 int main() {
     UCSR0B &= ~_BV(RXEN0) & ~_BV(TXEN0); // disable uart
 
-    DDRD |= 0b11111111; // pd0 .. pd6
+    DDRD |= 0b11111111; // pd0 .. pd7 as out
     
     uint8_t pattern = START;
 
