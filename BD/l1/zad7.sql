@@ -1,0 +1,17 @@
+-- CREATE TABLE Test (
+--     ID INT IDENTITY(1000, 10) PRIMARY KEY,
+--     Info VARCHAR(100)
+-- );
+
+INSERT INTO Test (Info) VALUES ('Pierwszy wiersz');
+
+SELECT @@IDENTITY AS 'AtAt_IDENTITY', IDENT_CURRENT('Test') AS 'IDENT_CURRENT_for_Test';
+
+-- CREATE TABLE Test2 (
+--     ID INT IDENTITY(1000, 10) PRIMARY KEY,
+--     Info VARCHAR(100)
+-- );
+
+INSERT INTO Test2 (Info) VALUES ('Drugi wiersz');
+
+SELECT @@IDENTITY AS 'AtAt_IDENTITY', IDENT_CURRENT('Test') AS 'IDENT_CURRENT_for_Test';
