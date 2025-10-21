@@ -2,30 +2,42 @@
 #include <cmath>
 #include <iomanip>
 
-double compute_fx_taylor(double x) {
-    const double threshold = 1e-5;
-    const double f_limit = 2024.0;
+double f_naiwna(double x) {
+    if (x == 0.0) return NAN;
+    double licznik = 162.0 * (1.0 - std::cos(5.0 * x));
+    double mianownik = x * x;
+    return licznik / mianownik;
+}
+
+double f_stabilna(double x) {
+    double u = 2.5 * x;
     
-    if (x < threshold) {
-        return 2024.0 - 806.4 * x * x + 77.0 * x * x * x * x;
-    } else {
-        return 1518.0 * (2.0 * x - sin(2.0 * x)) / (x * x * x);
+    if (u == 0.0) {
+        return 2025.0;
     }
+    
+    double sinc = std::sin(u) / u;
+    return 2025.0 * (sinc * sinc);
 }
 
 int main() {
-    std::cout << std::fixed << std::setprecision(15);
-    
-    for(int i = 11; i <= 20; ++i) {
-        double x = pow(10.0, -static_cast<double>(i));
-        double fx = compute_fx_taylor(x);
-        
-        std::cout << "i = " << i 
-                  << ", x = " << x 
-                  << ", f(x) = " << fx << std::endl;
+    std::cout << std::left
+              << std::setw(3) << "i"
+              << std::setw(12) << "x"
+              << std::setw(24) << "Wynik Naiwny"
+              << std::setw(24) << "Wynik Stabilny" << std::endl;
+
+    for (int i = 1; i <= 20; ++i) {
+        double x_d = std::pow(10.0, -i);
+
+        double result_naiwny = f_naiwna(x_d);
+        double result_stabilny = f_stabilna(x_d);
+
+        std::cout << std::scientific << std::setprecision(15);
+        std::cout << std::setw(3) << std::right << i << std::left << " "
+                  << std::setw(24) << result_naiwny
+                  << std::setw(24) << result_stabilny << std::endl;
     }
-    
+
     return 0;
 }
-
-
