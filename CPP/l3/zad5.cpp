@@ -58,7 +58,7 @@ int main() {
 
         cout << "size: " << sizes[id] << " #tests: " << tests[id]
             << "\n\tms: " << millis << "\n\tmins: "
-            << fixed << setprecision(3) << millis / 60'000.0 << endl;
+            << fixed << setprecision(6) << millis / 60'000.0 << endl; // w zad. do 3 miało być
     }
 
     return 0;
