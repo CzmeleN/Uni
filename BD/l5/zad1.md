@@ -47,4 +47,30 @@
 ## 3NF
 - i tylko od klucza
 
-- tak samo jak 2NF
+- Patients
+  - PatientID (PK)
+  - FirstName
+  - LastName
+  - StreetAddress
+  - ZipCode
+  - City
+
+- Physicians
+  - PhysicianID (PK)
+  - FirstName
+  - LastName
+
+- Services
+  - ServiceID (PK)
+  - Category
+  - Desciption
+
+- Appointments
+  - AppointmentID (PK)
+  - PatientID (FK -> Patients)
+  - PhysicianID (FK -> Physicians)
+  - ServiceID
+  - AppointmentDateTime
+  - RoomNumber
+  - Price
+
