@@ -1,8 +1,11 @@
 #include <iostream>
 #include <list>
 #include <algorithm>
+#include <random>
 
 constexpr int N = 23;
+constexpr int LONG_NAME = 5;
+constexpr int DARK_LUM = 64;
 
 class Point {
 private:
@@ -39,6 +42,10 @@ public:
         return 0;
     }
 
+    int get_name_len() const {
+        return name.length();
+    }
+
     bool is_dark() const {
         return calc_lum() < DARK_LUM;
     }
@@ -52,16 +59,22 @@ public:
 
 int main() {
     std::list<Point> pl;
-
-    srand(time(NULL));
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distriblen(1,10);
+    std::uniform_int_distribution<> distribchar(0, 25);
+    std::uniform_int_distribution<> distribpoint(0, 255);
 
     for (int i = 0; i < N; ++i) {
-        int len = rand() % 11;
+        int len = distriblen(gen);
         std::string name = "";
 
         for (int j = 0; j < len; ++j) {
-
+            name += (char)(97 + distribchar(gen));
         }
+
+        pl.push_back(Point(name, distribpoint(gen), distribpoint(gen), distribpoint(gen),
+                     distribpoint(gen), distribpoint(gen)));
     }
 
     auto print_all = [&pl]() {
@@ -70,5 +83,42 @@ int main() {
         std::cout << std::endl;
     };
 
+    std::erase_if(pl, [](Point x) {
+        return x.get_name_len() > LONG_NAME;
+    });
 
+    std::cout << "Bez długich nazw\n";
+    print_all();
+
+    int freqs[5]{};
+
+    std::for_each(pl.begin(), pl.end(), [&freqs](Point x) {
+        freqs[x.get_quarter()]++;
+    });
+
+    std::cout << "Ćwiartki: ";
+
+    for (int i = 0; i < 5; ++i) {
+        std::cout << i << ": " << freqs[i] << '\n';
+    }
+
+    std::cout << '\n';
+
+    pl.sort([](Point &a, Point &b) {
+        return a.calc_lum() < b.calc_lum();
+    });
+
+    std::cout << "Posortowane po luminacji\n";
+    print_all();
+
+    std::list<Point> darks;
+
+    std::for_each(pl.begin(), pl.end(), [&darks](Point x) {
+        if (x.calc_lum() < DARK_LUM) darks.push_back(x);
+    });
+
+    std::cout << "Ciemne punkty\n";
+    print_all();
+
+    return 0;
 }
