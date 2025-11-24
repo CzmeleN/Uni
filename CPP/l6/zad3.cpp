@@ -1,16 +1,15 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
-#include <list>
 
 using pii = std::pair<int, int>;
 
-std::list<pii> highest_freq(std::vector<int> nrs) {
+std::vector<pii> highest_freq(std::vector<int> nrs) {
     std::unordered_map<int, int> freqs{};
 
     for (const auto& x : nrs) freqs[x]++;
 
-    std::list<pii> res;
+    std::vector<pii> res;
     int curr_max = 0;
 
     for (const auto& [k, v] : freqs) {
@@ -21,7 +20,7 @@ std::list<pii> highest_freq(std::vector<int> nrs) {
             curr_max = v;
         }
 
-        res.push_back({k, v});
+        res.emplace_back(k, v);
     }
 
     return res;

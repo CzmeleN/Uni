@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
 
     std::for_each(it, end, [&freqs, &total](char c) {
         if (isalpha(c)) {
-            freqs[tolower(c) - 'a']++;
+            freqs[tolower(c) - 'a']++; // lepiej std::tolower z locale
             total++;
         }
     });
@@ -42,6 +42,7 @@ int main(int argc, char *argv[]) {
     // }
 
     for (int i = 0; i < LETTERS; ++i) {
+        // lepiej static_cast
         std::cout << (char)(i + 'a') << ": ";
         for (double j = freqs[i] / (double)total; j > 0; j -= 0.05) {
             std::cout << "#";

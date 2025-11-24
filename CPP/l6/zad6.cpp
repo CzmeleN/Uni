@@ -1,5 +1,6 @@
 #include <iostream>
 #include <tuple>
+#include <ostream>
 
 class Person {
 private:
@@ -28,6 +29,24 @@ public:
     }
 };
 
+template <typename T, size_t... Is>
+std::ostream& printTupleImp(std::ostream& os, const T& tp,
+                       std::index_sequence<Is...>) {
+    auto printElem = [&os](const auto& x, size_t id) {
+        if (id > 0) os << ", ";
+        os << id << ": " << x;
+    };
+    os << "(";
+    (printElem(get<Is>(tp), Is), ...);
+    os << ")";
+    return os;
+}
+template <typename T, size_t TSize = std::tuple_size<T>::value>
+std::ostream& operator <<(std::ostream& os, const T& tp) {
+    return printTupleImp(os, tp,
+                         std::make_index_sequence<TSize>{});
+}
+
 int main() {
     Person p("Jan", "Mączyński", 21, 87, 1.89);
 
@@ -36,14 +55,16 @@ int main() {
     std::cout << initials << ' ' << age << ' ' << bmi << '\n';
 
     const auto tup1 = p.sizes();
+    std::cout << tup1 << '\n';
 
-    std::cout << std::get<0>(tup1) << ' ' << std::get<1>(tup1) << ' ' << 
-        std::get<2>(tup1) << '\n';
+    // std::cout << std::get<0>(tup1) << ' ' << std::get<1>(tup1) << ' ' << 
+    //     std::get<2>(tup1) << '\n';
 
     const auto tup2 = p.basic_info();
+    std::cout << tup2 << '\n';
 
-    std::cout << std::get<0>(tup2) << ' ' << std::get<1>(tup2) << ' ' << 
-        std::get<2>(tup2) << '\n';
+    // std::cout << std::get<0>(tup2) << ' ' << std::get<1>(tup2) << ' ' << 
+    //     std::get<2>(tup2) << '\n';
 
     return 0;
 }
