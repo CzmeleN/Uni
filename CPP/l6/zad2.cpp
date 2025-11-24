@@ -6,6 +6,7 @@
 constexpr int N = 23;
 constexpr int LONG_NAME = 5;
 constexpr int DARK_LUM = 64;
+constexpr int MAX8 = 255;
 
 class Point {
 private:
@@ -63,7 +64,7 @@ int main() {
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> distriblen(1,10);
     std::uniform_int_distribution<> distribchar(0, 25);
-    std::uniform_int_distribution<> distribpoint(0, 255);
+    std::uniform_int_distribution<> distribpoint(0, MAX8);
 
     for (int i = 0; i < N; ++i) {
         int len = distriblen(gen);
@@ -73,14 +74,14 @@ int main() {
             name += (char)(97 + distribchar(gen));
         }
 
-        pl.push_back(Point(name, distribpoint(gen), distribpoint(gen), distribpoint(gen),
+        pl.push_back(Point(name, distribpoint(gen) - MAX8 / 2, distribpoint(gen) - MAX8 / 2, distribpoint(gen),
                      distribpoint(gen), distribpoint(gen)));
     }
 
     auto print_all = [&pl]() {
         std::cout << '\n';
         for (const auto& p : pl) std::cout << p;
-        std::cout << std::endl;
+        std::cout << '\n';
     };
 
     std::erase_if(pl, [](Point x) {

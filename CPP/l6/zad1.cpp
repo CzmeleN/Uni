@@ -60,7 +60,7 @@ int main() {
     auto print_all = [&pd]() {
         std::cout << '\n';
         for (auto const& p : pd) std::cout << p;
-        std::cout << std::endl;
+        std::cout << '\n';
     };
     
     std::cout << "posortowani po BMI:\n";
@@ -93,7 +93,7 @@ int main() {
         first = false;
 
         for (auto const& p : v) std::cout << p;
-        std::cout << std::endl;
+        std::cout << '\n';
     }
 
     auto cmp = [](Person x, Person y) {
@@ -103,5 +103,5 @@ int main() {
     std::cout << "najcięższy: "
         << *std::max_element(pd.begin(), pd.end(), cmp)
         << "najlżejszy: "
-        << *std::min_element(pd.begin(), pd.end(), cmp) << std::endl;
+        << *std::min_element(pd.begin(), pd.end(), cmp) << '\n';
 }
