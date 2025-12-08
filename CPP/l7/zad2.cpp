@@ -25,7 +25,7 @@ cd dzeta_r(cd z, int it = 10) {
         x += (i % 2 == 0 ? -one : one) / std::pow(cd(static_cast<double>(i)), z);
     }
 
-    return one / (one - std::pow(cd(2.0), one - z));
+    return x / (one - std::pow(cd(2.0), one - z));
 }
 
 int main() {
