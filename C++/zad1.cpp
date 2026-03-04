@@ -14,6 +14,8 @@ bool is_prime(ll x) {
 }
 
 int main(int argc, char *argv[]) {
+    if (argc <= 1) std::clog << "Usage: " << argv[0] << " <number> <number> ...\n";
+
     for (int i = 1; i < argc; ++i) {
         ll x = std::stoll(argv[i]);
 
