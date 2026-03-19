@@ -1,6 +1,7 @@
 #include "basic.hpp"
 
 #include <cmath>
+#include <numbers>
 #include <stdexcept>
 
 void punkt::move(wektor v) {
@@ -9,7 +10,7 @@ void punkt::move(wektor v) {
 }
 
 void punkt::rotate(punkt o, double deg) {
-    const double rad = deg * M_PI / 180.0;
+    const double rad = deg * std::numbers::pi / 180.0;
     const double s = sin(rad);
     const double c = cos(rad);
 
