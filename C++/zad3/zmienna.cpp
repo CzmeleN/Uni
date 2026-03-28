@@ -17,7 +17,7 @@ zmienna::zmienna(const zmienna &x) : name(x.name), val(x.val) {
     init_hist();
 }
 
-zmienna::zmienna(zmienna &&x) noexcept : name(std::move(x.name)), val(x.val), start(x.start), curr(x.curr), hist(x.hist) {
+zmienna::zmienna(zmienna &&x) noexcept : name(x.name), val(x.val), start(x.start), curr(x.curr), hist(x.hist) {
     x.hist = nullptr;
 }
 
