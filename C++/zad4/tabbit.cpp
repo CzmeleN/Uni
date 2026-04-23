@@ -96,9 +96,8 @@ tabbit::tabbit(const tabbit &tb) : dl(tb.dl) {
     std::copy(tb.tab, tb.tab + ilosc, tab);
 }
 
-tabbit::tabbit(tabbit &&tb) : dl(tb.dl), tab(tb.tab) {
-    tb.dl = 0;
-    tb.tab = nullptr;
+tabbit::tabbit(tabbit &&tb) : tabbit() {
+    *this = tb;
 }
 
 tabbit& tabbit::operator=(const tabbit &tb) {

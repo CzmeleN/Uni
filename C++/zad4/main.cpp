@@ -2,6 +2,8 @@
 #include <iostream>
 
 int main() {
+    tabbit x((tabbit({1, 0, 1, 1})));
+    std::cout << x << std::endl;
     tabbit t(46); // tablica 46-bitowa (zainicjalizowana zerami)
     // tabbit u(45ull); // tablica 64-bitowa (sizeof(uint64_t)*8)
     tabbit u(static_cast<uint64_t>(45)); // tablica 64-bitowa (sizeof(uint64_t)*8)

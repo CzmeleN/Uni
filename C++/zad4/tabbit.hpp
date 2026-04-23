@@ -36,7 +36,7 @@ protected:
 
 public:
     // wyzerowana tablica bitow [0...rozm]
-    explicit tabbit(int rozm);
+    explicit tabbit(int rozm = 1);
     // tablica 64 bitów zainicjalizowana wzorcem
     explicit tabbit(slowo tb);
 
