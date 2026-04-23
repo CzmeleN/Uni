@@ -14,7 +14,15 @@ int main() {
     bool b = v[1]; // odczytanie bitu 1-go
     std::cout << b << std::endl;
     u[45] = u[46] = u[63]; // przepisanie bitu
-    std::cout << t << std::endl; // wyświetlenie zawartości tablicy bitów
+    std::cout << t << '\n' << std::endl; // wyświetlenie zawartości tablicy bitów
+    
+    tabbit t1(47);
+    t1[0] = true;
+    t1[35] = true;
+    tabbit t2(std::move(t1));
+
+    std::cout << "t1: " << t1 << std::endl;
+    std::cout << "t2: " << t2 << std::endl;
     
     return 0;
 }

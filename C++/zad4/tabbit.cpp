@@ -97,7 +97,11 @@ tabbit::tabbit(const tabbit &tb) : dl(tb.dl) {
 }
 
 tabbit::tabbit(tabbit &&tb) : tabbit() {
+    // pomimo && tb i tak staje się lvalue, bo jest nazwany
+    // to jest kopiujące
     *this = tb;
+    // zmienia r, ale i tak wywołuje new oraz op= z delete więc mija się z celem?
+    // *this = std::move(tb);
 }
 
 tabbit& tabbit::operator=(const tabbit &tb) {
