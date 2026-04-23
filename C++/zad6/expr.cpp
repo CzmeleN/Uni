@@ -99,6 +99,11 @@ std::string bop::print_child(expr* child, bool is_right) const {
     return child->print();
 }
 
+std::string bop::print_all(const std::string& op) const {
+    return print_child(left, false) + ' ' + op + ' ' +
+           print_child(right, true);
+}
+
 bool not_op::calc() const {
     return !child->calc();
 }
@@ -120,7 +125,7 @@ bool and_op::calc() const {
 }
 
 std::string and_op::print() const {
-    return print_child(left, false) + " & " + print_child(right, true);
+    return print_all("&");
 }
 
 int and_op::get_prio() const {
@@ -132,7 +137,7 @@ bool xor_op::calc() const {
 }
 
 std::string xor_op::print() const {
-    return print_child(left, false) + " ^ " + print_child(right, true);
+    return print_all("^");
 }
 
 int xor_op::get_prio() const {
@@ -144,7 +149,7 @@ bool or_op::calc() const {
 }
 
 std::string or_op::print() const {
-    return print_child(left, false) + " | " + print_child(right, true);
+    return print_all("|");
 }
 
 int or_op::get_prio() const {
@@ -156,7 +161,7 @@ bool imp_op::calc() const {
 }
 
 std::string imp_op::print() const {
-    return print_child(left, false) + " => " + print_child(right, true);
+    return print_all("=>");
 }
 
 int imp_op::get_prio() const {
@@ -168,7 +173,7 @@ bool eqv_op::calc() const {
 }
 
 std::string eqv_op::print() const {
-    return print_child(left, false) + " <=> " + print_child(right, true);
+    return print_all("<=>");
 }
 
 int eqv_op::get_prio() const {

@@ -60,13 +60,14 @@ public:
 };
 
 class bop: public expr {
+private:
+    std::string print_child(expr* child, bool is_right) const;
 protected:
     expr *left, *right;
+    std::string print_all(const std::string& op) const;
 public:
     bop(expr* l, expr* r);
     ~bop();
-
-    std::string print_child(expr* child, bool is_right) const;
 };
 
 class not_op final : public uop {
