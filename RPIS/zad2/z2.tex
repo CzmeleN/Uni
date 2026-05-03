@@ -44,7 +44,7 @@ teraz możemy rozbić obliczanie $F(x)$ na lepsze numerycznie (nie od $-\infty$)
 \begin{itemize}
     \item dla $x \geq 0$: całkujemy na przedziale $[0, x]$ i dodajemy lewą połowę (0.5):
         \[F(x) = 0.5 + \int_{0}^{x} f(t)dt\]
-    \item dla $x \leq 0$: całkujemy na przedziale $[0, |x|]$ i odejmujemy:
+    \item dla $x < 0$: całkujemy na przedziale $[0, |x|]$ i odejmujemy:
         \[F(x) = 0.5 - \int_{0}^{|x|} f(t)dt\]
 \end{itemize}
 
